@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "movie_importer",
-    "movie"
+    "movie",
 ]
 
 # [package]
