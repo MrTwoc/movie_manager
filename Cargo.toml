@@ -1,7 +1,6 @@
 [workspace]
-members = [
+members = [ "movie",
     "movie_importer",
-    "movie",
 ]
 
 # [package]
