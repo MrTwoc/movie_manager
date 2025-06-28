@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "movie_importer",
+    "movie"
+]
+
+# [package]
+# name = "movie_manager"
+# version = "0.1.0"
+# edition = "2024"
