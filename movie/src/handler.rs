@@ -14,17 +14,17 @@ pub fn handler_login(username: &str) -> Result<(),Box<dyn std::error::Error>> {
             Ok(password)=> {
                 if user.password == password {
                     login_success(&user.role)?;
-                    println!("Login successful! You are logged in as {}.", user.username);
+                    println!("登陆成功! 您当前登陆用户为 {}.", user.username);
                 } else {
-                    println!("Incorrect password for user {}!", user.username);
+                    println!("密码错误!");
                 }
             }
             Err(_) => {
-                println!("Failed to read password. Please try again.");
+                println!("登陆失败! 请检查用户名和密码是否正确.");
             }
         }
     } else {
-        println!("User {} not found!", username);
+        println!("用户 {} 不存在!", username);
     }
     Ok(())
 
@@ -32,7 +32,6 @@ pub fn handler_login(username: &str) -> Result<(),Box<dyn std::error::Error>> {
 
 pub fn handler_logout() {
     logout();
-    println!("Logging out...");
 }
 
 pub fn handler_list() -> Result<(), Box<dyn Error>> {

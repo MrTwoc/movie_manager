@@ -2,6 +2,7 @@
 members = [ "movie",
     "movie_importer",
 ]
+resolver = "3"
 
 # [package]
 # name = "movie_manager"

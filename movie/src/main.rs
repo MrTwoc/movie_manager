@@ -10,13 +10,14 @@
 
 use clap::{arg, Parser, Subcommand};
 use movie::handler::{handler_add, handler_delete, handler_edit, handler_list, handler_login, handler_logout};
+use rusqlite::Connection;
 
 
 #[derive(Parser)]
 #[command(
     version,
     about = "Movie App",
-    long_about = "A simple movie application to manage your movie collection.",
+    long_about = "一个简单的电影应用程序来管理您的电影收藏.",
 )]
 struct Cli {
     #[command(subcommand)]
@@ -70,6 +71,12 @@ enum Commands {
 }
 
 fn main()-> Result<(), Box<dyn std::error::Error>> {
+    // 初始化数据库
+    if let Err(e) = init_db() {
+        println!("数据库初始化失败: {}", e);
+        return Err(e);
+    }
+
     let cli = Cli::parse();
     match &cli.commands {
         Some(Commands::Login { username }) => handler_login(username)?,
@@ -84,8 +91,14 @@ fn main()-> Result<(), Box<dyn std::error::Error>> {
         Some(Commands::Delete { disc, index }) => handler_delete(disc, index)?,
         Some(Commands::Edit { disc, index }) => handler_edit(disc, index)?,
         
-        _ => {println!("Please provide a valid command.");}
+        _ => {println!("未知指令");}
     }
 
+    Ok(())
+}
+
+fn init_db() -> Result<(), Box<dyn std::error::Error>>{
+    let mut _conn = Connection::open("app.db3")?;
+    _conn.pragma_update(None, "journal_mode", &"WAL")?;
     Ok(())
 }

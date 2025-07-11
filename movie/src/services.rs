@@ -34,7 +34,13 @@ pub fn login_success(role: &Role) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn get_logged_in_role() -> Result<Option<Role>, Box<dyn std::error::Error>> {
-    let role = fs::read_to_string(".session")?;
+    // 若.session文件不存在，则返回None
+    let role = match fs::read_to_string(".session") {
+        Ok(role) => role,
+        Err(_)  => {
+            return Ok(None);
+        }
+    };
     match role.as_str()  {
         "Admin" => Ok(Some(Role::Admin)),
         "User" => Ok(Some(Role::User)),
@@ -43,6 +49,7 @@ pub fn get_logged_in_role() -> Result<Option<Role>, Box<dyn std::error::Error>> 
 }
 
 pub fn logout() {
+    println!("正在注销登录...");
     fs::remove_file(".session").unwrap_or_else(|_|{
         println!("没有用户登陆");
     });
