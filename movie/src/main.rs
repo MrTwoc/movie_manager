@@ -89,15 +89,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Err(e);
     }
 
-    // 测试代码：获取登陆用户的角色
-    // db_get_logged_in_user(&conn)?;
-    // match db_get_logged_in_role(&conn) {
-    //     Ok(user) => {
-    //         println!("当前登录用户: {:?}", user);
-    //     }
-    //     Err(_) => {}
-    // }
-
     let cli = Cli::parse();
     match &cli.commands {
         Some(Commands::Login { username }) => handler_login(&conn, username)?,

@@ -82,7 +82,6 @@ pub fn db_get_logged_in_role(conn: &Connection) -> Result<Option<Role>, Box<dyn 
 }
 
 pub fn db_list_movies(conn: &Connection) -> Result<(), Box<dyn Error>> {
-    // println!("db_list_movies");
     let mut stmt = conn.prepare("SELECT disc, year, title, remark FROM movies")?;
     let movies = stmt.query_map([], |row| {
         Ok((
@@ -110,10 +109,6 @@ pub fn db_list_movies(conn: &Connection) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn db_add_movie_to_db(conn: &Connection, movie: &Movie) -> Result<(), Box<dyn Error>> {
-    // println!(
-    //     "Disc: {}, Year: {}, Title: {}, Remark: {:?}",
-    //     movie.disc, movie.year, movie.title, movie.remark
-    // );
     // 添加电影的user_id 默认先设为1，后续再修改
     let mut stmt = conn.prepare(
         "INSERT INTO movies (disc, year, title, remark, user_id) VALUES (?, ?, ?, ?, ?)",
