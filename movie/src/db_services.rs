@@ -81,31 +81,32 @@ pub fn db_get_logged_in_role(conn: &Connection) -> Result<Option<Role>, Box<dyn 
     }
 }
 
-pub fn db_list_movies(conn: &Connection) -> Result<(), Box<dyn Error>> {
-    let mut stmt = conn.prepare("SELECT disc, year, title, remark FROM movies")?;
-    let movies = stmt.query_map([], |row| {
-        Ok((
-            row.get::<_, usize>(0)?,          // 假设 disc 是 i32 类型
-            row.get::<_, String>(1)?,         // 假设 year 是 String 类型
-            row.get::<_, String>(2)?,         // 假设 title 是 String 类型
-            row.get::<_, Option<String>>(3)?, // 假设 remark 是 Option<String> 类型
-        ))
-    })?;
-    // 遍历查询结果并打印
-    for movie in movies {
-        match movie {
-            Ok((disc, year, title, remark)) => {
-                println!(
-                    "Disc: {}, Year: {}, Title: {}, Remark: {:?}",
-                    disc, year, title, remark
-                );
-            }
-            Err(e) => {
-                println!("错误，无法获取电影信息: {}", e);
-            }
-        }
+pub fn db_list_movies(conn: &Connection) -> Result<Vec<Movie>, Box<dyn Error>> {
+    // 使用常量定义SQL语句
+    const SQL: &str = "
+        SELECT disc, year, title, remark 
+        FROM movies
+    ";
+
+    let mut stmt = conn.prepare(SQL)?;
+
+    // 使用列名代替索引，提高可读性和安全性
+    let movies = stmt
+        .query_map([], |row| {
+            Ok(Movie {
+                disc: row.get("disc")?,
+                year: row.get("year")?,
+                title: row.get("title")?,
+                remark: row.get("remark")?,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?; // 统一收集错误
+    // 打印查询结果
+    for movie in &movies {
+        println!("{:?}", movie);
     }
-    Ok(())
+
+    Ok(movies)
 }
 
 pub fn db_add_movie_to_db(conn: &Connection, movie: &Movie) -> Result<(), Box<dyn Error>> {
